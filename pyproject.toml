@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "chargeapi"
+version = "0.1.0"
+description = ""
+authors = ["Victor Martinez <vcrmartinez@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["all"], version = "^0.100.1"}
+aiohttp = "^3.8.5"
+pydantic = "^2.1.1"
+asyncio = "^3.4.3"
+python-decouple = "^3.8"
+asyncpg = "^0.28.0"
+psycopg2-binary = "^2.9.6"
+requests = "^2.31.0"
+alembic = "^1.11.1"
+structlog = "^23.1.0"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.19"}
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+ipython = "^8.14.0"
+black = "^23.7.0"
+mypy = "^1.4.1"
+pytest-env = "^0.8.2"
+pytest-asyncio = "^0.21.1"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+unify = "^0.5"
+bandit = "^1.7.5"
+httpx = "^0.24.1"
+faker = "^19.2.0"
+pytest-freezegun = "^0.4.2"
+freezegun = "^1.2.2"
+pytest-factoryboy = "^2.5.1"
+coverage = "^7.2.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

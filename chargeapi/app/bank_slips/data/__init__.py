@@ -1,0 +1,2 @@
+from .dependencies import detail_facility_repository
+from .repository import DetailFacilityRepository
