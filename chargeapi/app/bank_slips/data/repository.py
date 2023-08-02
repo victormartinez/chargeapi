@@ -1,7 +1,6 @@
 from typing import List
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
 
 from chargeapi.db.base_repository import BaseRepository
 from chargeapi.db.models import DBBankSlip
@@ -26,7 +25,6 @@ class PersistBankSlipsRepository(BaseRepository):
             lambda session: session.bulk_save_objects(objects)
         )
         await self.db_session.commit()
-
 
 
 class ListBankSlipsRepository(BaseRepository):
