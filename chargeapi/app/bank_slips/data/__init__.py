@@ -1,2 +1,2 @@
-from .dependencies import detail_facility_repository
-from .repository import DetailFacilityRepository
+from .entities import BankSlipIn
+from .repository import PersistBankSlipsRepository

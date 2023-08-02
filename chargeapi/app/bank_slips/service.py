@@ -1,16 +1,16 @@
+from typing import List
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure import logging
-from chargeapi.app.exceptions import (
-    ChargeApiException,
-    ChargeApiExceptionType,
-)
+from chargeapi.app.bank_slips.data import BankSlipIn, PersistBankSlipsRepository
 
-from .data.repository import PersistBankSlipDebtsRepository
 
 logger = logging.get_logger(__name__)
 
 
-async def persist_bank_slip_debts(session: AsyncSession) -> bool:
-    bind_logger = logger.bind()
-    repository = await PersistBankSlipDebtsRepository(session)
+async def persist(session: AsyncSession, bank_slips: List[BankSlipIn]) -> bool:
+    logger.info("persisting bank slips", total=len(bank_slips))
+    repository = PersistBankSlipsRepository(session)
+    await repository.execute(bank_slips)
+    return True

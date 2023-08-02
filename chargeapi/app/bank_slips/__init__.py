@@ -1,1 +1,2 @@
-from .service import get_facility
+from .service import persist
+from .data import BankSlipIn
