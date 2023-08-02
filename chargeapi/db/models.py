@@ -13,5 +13,5 @@ class DBBankSlip(BaseModel):
     debt_due_date = Column(Date)
     debt_id = Column(String, nullable=False, unique=True, index=True)
     paid_at = Column(DateTime, nullable=True)
-    paid_amount = Column(String, nullable=True)
+    paid_amount = Column(DECIMAL, nullable=True)
     paid_by = Column(String, nullable=True)
