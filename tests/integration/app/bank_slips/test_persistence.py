@@ -1,21 +1,13 @@
+import io
+
 from datetime import date
 
-from chargeapi.app.bank_slips import persist, BankSlipIn
+from chargeapi.app.bank_slips import load_csv
 from chargeapi.app.bank_slips.data.repository import ListBankSlipsRepository
 
 
-async def test_persist(session):
-    bank_slips = [
-        BankSlipIn(
-            name="John Doe",
-            government_id="11111111111",
-            email="johndoe@kanastra.com.br",
-            debt_amount="1000000.00",
-            debt_due_date=date(2022, 10, 12),
-            debt_id="8291",
-        )
-    ]
-    await persist(session, bank_slips)
+async def test_persist(session, bytes_reader):
+    await load_csv(session, io.BytesIO(bytes_reader('bank_slip.csv')))
 
     result = await ListBankSlipsRepository(session).execute()
     assert len(result) == 1
