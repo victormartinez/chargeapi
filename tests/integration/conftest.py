@@ -3,9 +3,7 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm.session import sessionmaker
 
-from chargeapi.db.models import (
-    DBBankSlipDebt,
-)
+from chargeapi.db.models import DBBankSlip
 from chargeapi.db.session import SessionLocal
 from chargeapi.main import app
 from settings import build_database_uri, build_engine_config, build_session_config
@@ -17,23 +15,23 @@ TestingSessionLocal = sessionmaker(
 
 
 @pytest_asyncio.fixture(scope="function")
-async def db(override_async_session):
+async def session(override_async_session):
     app.dependency_overrides[SessionLocal] = override_async_session
 
     yield override_async_session
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-async def clean_db(db):
-    await db.execute(delete(DBBankSlipDebt))
-    await db.commit()
+async def clean_db(session):
+    await session.execute(delete(DBBankSlip))
+    await session.commit()
 
 
 @pytest_asyncio.fixture()
 async def override_async_session():
-    db = TestingSessionLocal()
+    session = TestingSessionLocal()
     try:
-        yield db
-        await db.commit()
+        yield session
+        await session.commit()
     finally:
-        await db.close()
+        await session.close()
