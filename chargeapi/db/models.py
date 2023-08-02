@@ -11,4 +11,4 @@ class DBBankSlip(BaseModel):
     email = Column(String, nullable=False)
     debt_amount = Column(String, nullable=False)
     debt_due_date = Column(Date)
-    debt_id = Column(String, nullable=False, unique=True)
+    debt_id = Column(String, nullable=False, unique=True, index=True)
