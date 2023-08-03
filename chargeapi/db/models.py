@@ -40,3 +40,4 @@ class DBBankSlip(BaseModel):
     paid_amount = Column(DECIMAL, nullable=True)
     paid_by = Column(String, nullable=True)
     notified_at = Column(DateTime, nullable=True)
+    debt = relationship("DBDebt", uselist=False)

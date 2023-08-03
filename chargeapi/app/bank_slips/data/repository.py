@@ -6,7 +6,7 @@ from sqlalchemy import select, update, func
 from sqlalchemy.orm import joinedload
 
 from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
-from chargeapi.app.bank_slips.data.entities import BankSlipPaymentIn, BankSlip
+from chargeapi.app.bank_slips.data.entities import BankSlipPaymentIn, BankSlip, BankSlipDebt, Debt
 from chargeapi.db.base_repository import BaseRepository
 from chargeapi.db.models import DBDebt, DBBankSlip
 
@@ -57,6 +57,7 @@ class ListBankSlipsRepository(BaseRepository):
                 paid_at=db_obj.paid_at,
                 paid_amount=db_obj.paid_amount,
                 paid_by=db_obj.paid_by,
+                notified_at=db_obj.notified_at,
             )
             for db_obj in db_bank_slips
         ]
@@ -90,27 +91,39 @@ class CreateBankSlipRepository(BaseRepository):
         return await self._adapt(db_bank_slip)
 
 
-class ListNotNotifiedBankSlipsRepository(BaseRepository):
-    async def _adapt(self, db_bank_slips: List[DBBankSlip]) -> List[BankSlip]:
+class ListNotNotifiedBankSlipDebtsRepository(BaseRepository):
+    async def _adapt(self, db_bank_slips: List[DBBankSlip]) -> List[BankSlipDebt]:
         return [
-            BankSlip(
+            BankSlipDebt(
                 id=db_obj.id,
                 debt_id=db_obj.debt_id,
+                debt=Debt(
+                    id=db_obj.debt.id,
+                    name=db_obj.debt.name,
+                    government_id=db_obj.debt.government_id,
+                    email=db_obj.debt.email,
+                    debt_amount=db_obj.debt.debt_amount,
+                    debt_due_date=db_obj.debt.debt_due_date,
+                    debt_identifier=db_obj.debt.debt_identifier,
+                ),
                 code=db_obj.code,
                 payment_link=db_obj.payment_link,
                 barcode=db_obj.barcode,
                 paid_at=db_obj.paid_at,
                 paid_amount=db_obj.paid_amount,
                 paid_by=db_obj.paid_by,
+                notified_at=db_obj.notified_at,
             )
             for db_obj in db_bank_slips
         ]
 
-    async def execute(self, offset: int, limit: int) -> Tuple[int, List[BankSlip]]:
+    async def execute(self, offset: int, limit: int) -> Tuple[int, List[BankSlipDebt]]:
         query = (
             select(DBBankSlip, func.count(DBBankSlip.id).over())
+            .join(DBDebt)
             .where(DBBankSlip.notified_at.is_(None))
             .order_by(DBBankSlip.created_at.asc())
+            .options(joinedload(DBBankSlip.debt))
             .offset(offset)
             .limit(limit)
         )
@@ -122,6 +135,27 @@ class ListNotNotifiedBankSlipsRepository(BaseRepository):
         total_items = rows[0][1]
         objects = [row[0] for row in rows]
         return total_items, await self._adapt(objects)
+
+
+class GetBankSlipRepository(BaseRepository):
+    async def _adapt(self, db_obj: DBBankSlip) -> BankSlip:
+        return BankSlip(
+            id=db_obj.id,
+            debt_id=db_obj.debt_id,
+            code=db_obj.code,
+            payment_link=db_obj.payment_link,
+            barcode=db_obj.barcode,
+            paid_at=db_obj.paid_at,
+            paid_amount=db_obj.paid_amount,
+            paid_by=db_obj.paid_by,
+            notified_at=db_obj.notified_at,
+        )
+
+    async def execute(self, idx: UUID) -> BankSlip:
+        query = select(DBBankSlip).where(DBBankSlip.id == idx)
+        result = await self.db_session.execute(query)
+        db_object = result.scalars().first()
+        return await self._adapt(db_object)
 
 
 class FlagNotifiedBankSlipRepository(BaseRepository):

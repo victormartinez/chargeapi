@@ -8,6 +8,7 @@ BANK_SLIP_API_KEY = config("BANK_SLIP_API_KEY", "")
 
 # Email Service Api Key
 EMAIL_SERVICE_API_KEY = config("EMAIL_SERVICE_API_KEY", "")
+CONTACT_EMAIL = config("CONTACT_EMAIL", "contact@vcrmartinez.com")
 
 # Database specifications
 DB_USER = config("DB_USER", "")

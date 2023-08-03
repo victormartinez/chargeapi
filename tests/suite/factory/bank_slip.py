@@ -24,3 +24,5 @@ class DBBankSlipFactoryData(factory.Factory):
     paid_by = factory.LazyFunction(lambda: faker.name())
     created_at = datetime.now()
     updated_at = datetime.now()
+    notified_at = datetime.now()
+

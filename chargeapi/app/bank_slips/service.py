@@ -10,6 +10,7 @@ from chargeapi.ext.email_service import EmailApiClient
 from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from chargeapi.app.bank_slips.data import (
     BankSlip,
+    BankSlipDebt,
     BankSlipPaymentIn,
     CreateBankSlipRepository,
     RegisterBankSlipPaymentRepository,
@@ -70,14 +71,22 @@ async def create_bank_slip(
     )
 
 
-async def notify_bank_slip(
-    session: AsyncSession,
-    bank_slip: BankSlip,
-) -> bool:
+async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bool:
     email_client = EmailApiClient(api_key=settings.EMAIL_SERVICE_API_KEY)
-    has_notified = await email_client.notify_bank_slip(
-        bank_slip.code, bank_slip.payment_link, bank_slip.barcode
+    email_client.from_(settings.CONTACT_EMAIL)
+    email_client.to(bank_slip.debt.email)
+    email_client.subject("Boleto Bancário")
+    email_client.body(
+        f'''
+        Olá, {bank_slip.debt.name}
+
+        Boleto disponível em {bank_slip.payment_link}
+
+        Código de barras: {bank_slip.barcode}
+        '''
     )
+
+    has_notified = await email_client.notify()
     if has_notified:
         repository = FlagNotifiedBankSlipRepository(session)
         updated_row = await repository.execute(bank_slip.id)

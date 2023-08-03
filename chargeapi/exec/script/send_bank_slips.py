@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from chargeapi.db.session import get_session
 from chargeapi.app.bank_slips import notify_bank_slip
 from chargeapi.app.bank_slips.data import BankSlip
-from chargeapi.app.bank_slips.data.repository import ListNotNotifiedBankSlipsRepository
+from chargeapi.app.bank_slips.data.repository import ListNotNotifiedBankSlipDebtsRepository
 
 
 logger = structlog.get_logger("main")
@@ -28,7 +28,7 @@ async def process() -> None:
 
     async for session in get_session():
         while has_next:
-            repository = ListNotNotifiedBankSlipsRepository(session)
+            repository = ListNotNotifiedBankSlipDebtsRepository(session)
             total, bank_slips = await repository.execute(OFFSET, LIMIT)
             if total == 0 or len(bank_slips) == 0:
                 has_next = False
