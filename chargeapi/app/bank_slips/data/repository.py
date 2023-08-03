@@ -1,6 +1,7 @@
+from uuid import UUID
 from typing import List
 
-from sqlalchemy import update, select
+from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
@@ -66,3 +67,23 @@ class ListBankSlipsRepository(BaseRepository):
         query_result = await self.db_session.execute(query)
         db_rows = query_result.scalars().all()
         return await self._adapt(db_rows)
+
+
+class CreateBankSlipRepository(BaseRepository):
+    async def _adapt(self, db_bank_slips: List[DBBankSlip]) -> List[BankSlipOut]:
+        return BankSlipOut(
+            id=db_bank_slips.id,
+            debt_id=db_bank_slips.debt_id,
+            code=db_bank_slips.code,
+            payment_link=db_bank_slips.payment_link,
+            barcode=db_bank_slips.barcode,
+        )
+
+    async def execute(self, debt_id: UUID, code: str, payment_link: str, barcode: str) -> BankSlipOut:
+        db_bank_slip = DBBankSlip(
+            debt_id=debt_id, code=code, payment_link=payment_link, barcode=barcode   
+        )
+        self.db_session.add(db_bank_slip)
+        await self.db_session.commit()
+        await self.db_session.refresh(db_bank_slip, attribute_names=["id"])
+        return await self._adapt(db_bank_slip)

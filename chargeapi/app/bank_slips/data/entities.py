@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal
 from typing import Optional
 from uuid import UUID
@@ -19,6 +19,6 @@ class BankSlipOut(BaseModel):
     code: str
     payment_link: str
     barcode: str
-    paid_at: Optional[datetime]
-    paid_amount: Optional[Decimal]
-    paid_by: Optional[str]
+    paid_at: Optional[datetime] = None
+    paid_amount: Optional[Decimal] = None
+    paid_by: Optional[str] = None

@@ -1,11 +1,16 @@
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal
+from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import settings
+from chargeapi.ext.bank_service import BankSlipService
 from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from chargeapi.app.bank_slips.data import (
-    BankSlipPaymentIn,   
+    BankSlipOut,
+    BankSlipPaymentIn,
+    CreateBankSlipRepository,
     RegisterBankSlipPaymentRepository,
 )
 from infrastructure import logging
@@ -36,3 +41,23 @@ async def register_payment(
             message=f"Debt {debt_identifier} not found."
         )
     logger.info("finished registering bank slip payment", debt_identifier=debt_identifier)
+
+
+async def create_bank_slip(session: AsyncSession,
+    debt_id: UUID,
+    name: str,
+    email: str,
+    debt_amount: Decimal,
+    debt_due_date: date,
+) -> BankSlipOut:
+    bank_slip_service = BankSlipService(api_key=settings.BANK_SLIP_API_KEY)
+    bank_slip = await bank_slip_service.generate_bank_slip(
+        name, email, debt_amount, debt_due_date
+    )
+    repository = CreateBankSlipRepository(session)
+    return await repository.execute(
+        debt_id,
+        bank_slip.code,
+        bank_slip.payment_link,
+        bank_slip.barcode
+    )
