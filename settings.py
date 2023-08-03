@@ -6,6 +6,8 @@ from decouple import config
 BANK_SLIP_HOST = config("BANK_SLIP_HOST", "https://pagseguro.uol.com.br")
 BANK_SLIP_API_KEY = config("BANK_SLIP_API_KEY", "")
 
+# Email Service Api Key
+EMAIL_SERVICE_API_KEY = config("EMAIL_SERVICE_API_KEY", "")
 
 # Database specifications
 DB_USER = config("DB_USER", "")
