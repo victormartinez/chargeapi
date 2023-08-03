@@ -1,19 +1,19 @@
 import asyncio
-import structlog
 from typing import List
 
+import structlog
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from chargeapi.db.session import get_session
 from chargeapi.app.bank_slips import create_bank_slip
+from chargeapi.app.bank_slips.data import BankSlip
 from chargeapi.app.debts.data import DebtOut
 from chargeapi.app.debts.data.repository import ListDebtsWithoutBankSlipsRepository
-
+from chargeapi.db.session import get_session
 
 logger = structlog.get_logger("main")
 
 
-async def create_bank_slips(session: AsyncSession, debts: List[DebtOut]):
+async def create_bank_slips(session: AsyncSession, debts: List[DebtOut]) -> None:
     background_tasks = set()
     for item in debts:
         task = asyncio.create_task(
@@ -28,7 +28,7 @@ async def create_bank_slips(session: AsyncSession, debts: List[DebtOut]):
         )
         background_tasks.add(task)
         task.add_done_callback(background_tasks.discard)
-    return await asyncio.gather(*background_tasks)
+    await asyncio.gather(*background_tasks)
 
 
 async def process() -> None:

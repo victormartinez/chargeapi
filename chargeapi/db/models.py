@@ -1,4 +1,5 @@
-from sqlalchemy import DECIMAL, Column, DateTime, Date, String, ForeignKey
+# type: ignore
+from sqlalchemy import DECIMAL, Column, Date, DateTime, ForeignKey, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 

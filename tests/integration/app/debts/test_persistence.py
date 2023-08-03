@@ -1,14 +1,13 @@
 import io
-
-from decimal import Decimal
 from datetime import date
+from decimal import Decimal
 
 from chargeapi.app.debts import load_csv
 from chargeapi.app.debts.data.repository import ListDebtsRepository
 
 
 async def test_persist(session, bytes_reader):
-    await load_csv(session, io.BytesIO(bytes_reader('bank_slip.csv')))
+    await load_csv(session, io.BytesIO(bytes_reader("bank_slip.csv")))
 
     result = await ListDebtsRepository(session).execute(offset=0, limit=10)
     assert len(result) == 1

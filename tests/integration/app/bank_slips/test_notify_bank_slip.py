@@ -6,12 +6,12 @@ import pytest
 from chargeapi.app.bank_slips import notify_bank_slip
 from chargeapi.app.bank_slips.data import (
     BankSlipPaymentIn,
+    GetBankSlipRepository,
     ListNotNotifiedBankSlipDebtsRepository,
     RegisterBankSlipPaymentRepository,
-    GetBankSlipRepository,
 )
 from tests.suite.database import DatabaseUtils
-from tests.suite.factory import DBDebtFactoryData, DBBankSlipFactoryData
+from tests.suite.factory import DBBankSlipFactoryData, DBDebtFactoryData
 
 
 async def test_notify_bank_slip(session):
@@ -24,11 +24,10 @@ async def test_notify_bank_slip(session):
     repository = ListNotNotifiedBankSlipDebtsRepository(session)
     total, bank_slips = await repository.execute(0, 10)
     assert total == 1
-    
+
     has_notified = await notify_bank_slip(session, bank_slips[0])
     assert has_notified is True
 
     repo = GetBankSlipRepository(session)
     refreshed_obj = await repo.execute(bank_slips[0].id)
     assert refreshed_obj.notified_at is not None
-    

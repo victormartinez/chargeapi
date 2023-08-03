@@ -4,10 +4,7 @@ from typing import Any
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from chargeapi.app.exceptions import (
-    ChargeApiException,
-    ChargeApiExceptionType,
-)
+from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 
 
 class BaseRepository:

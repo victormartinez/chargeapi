@@ -1,4 +1,5 @@
-import random, string
+import random
+import string
 from datetime import date
 from decimal import Decimal
 from urllib.parse import urljoin
@@ -23,16 +24,16 @@ class BankSlipService:
         self, name: str, email: str, amount: Decimal, due_date: date
     ) -> BankSlipDocument:
         CODE_LENGTH, BARCODE_LENGTH = 64, 80
-        code = ''.join(
+        code = "".join(
             random.choice(
                 string.ascii_uppercase + string.ascii_lowercase + string.digits
             )
             for _ in range(CODE_LENGTH)
         )
-        barcode = ''.join(random.choice(string.digits) for _ in range(BARCODE_LENGTH))
+        barcode = "".join(random.choice(string.digits) for _ in range(BARCODE_LENGTH))
 
         payment_link = urljoin(
-            self.base_url, f'/checkout/payment/booklet/print.jhtml?c={code}'
+            self.base_url, f"/checkout/payment/booklet/print.jhtml?c={code}"
         )
         return BankSlipDocument(
             code=code,

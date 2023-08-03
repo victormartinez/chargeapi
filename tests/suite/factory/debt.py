@@ -1,5 +1,5 @@
-from decimal import Decimal
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 import factory
 from faker import Factory as FakerFactory
@@ -19,6 +19,6 @@ class DBDebtFactoryData(factory.Factory):
     email = factory.LazyFunction(lambda: faker.email())
     debt_due_date = factory.LazyFunction(lambda: datetime.now() + timedelta(days=20))
     debt_identifier = factory.LazyFunction(lambda: str(faker.uuid4()))
-    debt_amount = Decimal('1000.00')
+    debt_amount = Decimal("1000.00")
     created_at = datetime.now()
     updated_at = datetime.now()

@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from tests.suite.database import DatabaseUtils
-from tests.suite.factory import DBDebtFactoryData, DBBankSlipFactoryData
+from tests.suite.factory import DBBankSlipFactoryData, DBDebtFactoryData
 
 
 async def test_register_bank_slip_payment_success(session, async_client):

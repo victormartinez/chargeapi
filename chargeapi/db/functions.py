@@ -15,6 +15,6 @@ class utcnow(expression.FunctionElement):
     inherit_cache = True
 
 
-@compiles(utcnow, "postgresql")
+@compiles(utcnow, "postgresql")  # type: ignore
 def pg_utcnow(element: Any, compiler: Any, **kw: Any) -> str:
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"

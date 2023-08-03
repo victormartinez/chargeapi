@@ -3,14 +3,14 @@ from decimal import Decimal
 
 import pytest
 
-from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from chargeapi.app.bank_slips.data import (
     BankSlipPaymentIn,
     ListBankSlipsRepository,
     RegisterBankSlipPaymentRepository,
 )
+from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from tests.suite.database import DatabaseUtils
-from tests.suite.factory import DBDebtFactoryData, DBBankSlipFactoryData
+from tests.suite.factory import DBBankSlipFactoryData, DBDebtFactoryData
 
 
 async def test_register_payment(session):
@@ -27,7 +27,7 @@ async def test_register_payment(session):
         BankSlipPaymentIn(
             debt_identifier="8291",
             paid_at=PAID_AT,
-            paid_amount=Decimal('1000.00'),
+            paid_amount=Decimal("1000.00"),
             paid_by="John Doe",
         )
     )
@@ -55,7 +55,7 @@ async def test_register_payment_no_bank_slip(session):
             BankSlipPaymentIn(
                 debt_identifier="0987",
                 paid_at=datetime.utcnow(),
-                paid_amount=Decimal('1000.00'),
+                paid_amount=Decimal("1000.00"),
                 paid_by="John Doe",
             )
         )

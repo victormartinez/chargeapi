@@ -1,9 +1,9 @@
-from .entities import BankSlipPaymentIn, BankSlip, BankSlipDebt
+from .entities import BankSlip, BankSlipDebt, BankSlipPaymentIn
 from .repository import (
-    RegisterBankSlipPaymentRepository,
-    ListBankSlipsRepository,
     CreateBankSlipRepository,
     FlagNotifiedBankSlipRepository,
-    ListNotNotifiedBankSlipDebtsRepository,
     GetBankSlipRepository,
+    ListBankSlipsRepository,
+    ListNotNotifiedBankSlipDebtsRepository,
+    RegisterBankSlipPaymentRepository,
 )

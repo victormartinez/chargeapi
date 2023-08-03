@@ -1,9 +1,10 @@
-from typing import List, Tuple
+from typing import List, Sequence, Tuple
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
 from chargeapi.db.base_repository import BaseRepository
-from chargeapi.db.models import DBDebt, DBBankSlip
+from chargeapi.db.models import DBBankSlip, DBDebt
+
 from .entities import DebtIn, DebtOut
 
 
@@ -27,7 +28,7 @@ class PersistDebtRepository(BaseRepository):
 
 
 class ListDebtsRepository(BaseRepository):
-    async def _adapt(self, db_bank_slips: List[DBDebt]) -> List[DebtOut]:
+    async def _adapt(self, db_bank_slips: Sequence[DBDebt]) -> List[DebtOut]:
         return [
             DebtOut(
                 id=db_obj.id,
@@ -44,7 +45,7 @@ class ListDebtsRepository(BaseRepository):
     async def execute(self, offset: int, limit: int) -> List[DebtOut]:  # type: ignore
         query = select(DBDebt).offset(offset).limit(limit)
         query_result = await self.db_session.execute(query)
-        db_rows = query_result.scalars().all()
+        db_rows: Sequence[DebtOut] = query_result.scalars().all()
         return await self._adapt(db_rows)
 
 
@@ -65,7 +66,7 @@ class ListDebtsWithoutBankSlipsRepository(BaseRepository):
 
     async def execute(self, offset: int, limit: int) -> Tuple[int, List[DebtOut]]:  # type: ignore
         query = (
-            select(DBDebt, func.count(DBDebt.id).over())
+            select(DBDebt, func.count(DBDebt.id).over())  # type: ignore
             .join(DBBankSlip, isouter=True)
             .where(DBBankSlip.id.is_(None))
             .order_by(DBDebt.debt_due_date.asc())

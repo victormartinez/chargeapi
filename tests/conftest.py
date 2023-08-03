@@ -1,12 +1,11 @@
+import asyncio
 from pathlib import Path
 
-import asyncio
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
 from chargeapi.main import app
-
 
 TESTS_FOLDER = Path(__file__).cwd() / "tests"
 

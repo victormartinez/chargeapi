@@ -1,10 +1,11 @@
 from http import HTTPStatus
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends
 
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from chargeapi.api.bank_slips.schema import BankSlipPaymentInput
 from chargeapi.app import bank_slips
 from chargeapi.db.session import get_session
-from chargeapi.api.bank_slips.schema import BankSlipPaymentInput
 
 router = APIRouter(tags=["bank_slips"])
 

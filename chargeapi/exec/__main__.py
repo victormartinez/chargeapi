@@ -1,7 +1,7 @@
 import asyncio
 
-from infrastructure import logging
 from chargeapi.exec.main import get_filepaths, load_file, parse_args
+from infrastructure import logging
 
 logger = logging.get_logger(__name__)
 

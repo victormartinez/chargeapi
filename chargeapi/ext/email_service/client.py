@@ -11,10 +11,10 @@ class EmailApiResponse(BaseModel):
 class EmailApiClient:
     def __init__(self, api_key: str):
         self.api_key = api_key
-        self._to = None
-        self._from = None
-        self._subject = None
-        self._body = None
+        self._to = ""
+        self._from = ""
+        self._subject = ""
+        self._body = ""
 
     def to(self, to: str) -> None:
         self._to = to
@@ -28,7 +28,7 @@ class EmailApiClient:
     def body(self, body: str) -> None:
         self._body = body
 
-    async def notify(self) -> bool:
+    async def notify(self) -> EmailApiResponse:
         return EmailApiResponse(
             to=self._to,
             from_=self._from,

@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Optional
 from uuid import UUID
@@ -19,10 +19,10 @@ class BankSlip(BaseModel):
     code: str
     payment_link: str
     barcode: str
-    paid_at: Optional[datetime] = None
-    paid_amount: Optional[Decimal] = None
-    paid_by: Optional[str] = None
-    notified_at: Optional[datetime] = None
+    paid_at: datetime | None = None
+    paid_amount: Decimal | None = None
+    paid_by: str | None = None
+    notified_at: datetime | None = None
 
 
 class Debt(BaseModel):
@@ -42,7 +42,7 @@ class BankSlipDebt(BaseModel):
     code: str
     payment_link: str
     barcode: str
-    paid_at: Optional[datetime] = None
-    paid_amount: Optional[Decimal] = None
-    paid_by: Optional[str] = None
-    notified_at: Optional[datetime] = None
+    paid_at: datetime | None = None
+    paid_amount: Decimal | None = None
+    paid_by: str | None = None
+    notified_at: datetime | None = None

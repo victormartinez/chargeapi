@@ -4,13 +4,13 @@ from typing import Any, Dict
 from fastapi import FastAPI
 from fastapi.exceptions import HTTPException
 
+from chargeapi.api.bank_slips.resources import router as bank_slips_router
+from chargeapi.api.debts.resources import router as debts_router
 from chargeapi.api.exception_handlers import (
     bad_request_handler,
     http_exception_handler,
     validation_exception_handler,
 )
-from chargeapi.api.bank_slips.resources import router as bank_slips_router
-from chargeapi.api.debts.resources import router as debts_router
 from chargeapi.app.exceptions import ChargeApiException
 
 

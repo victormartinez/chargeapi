@@ -6,10 +6,7 @@ from typing import Dict, List, Optional
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 
-from chargeapi.app.exceptions import (
-    ChargeApiException,
-    ChargeApiExceptionType,
-)
+from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 
 
 class ErrorData(BaseModel):
@@ -53,4 +50,8 @@ def json_decode_to_response(exc: JSONDecodeError) -> ResponseBody:
 
 
 def http_exception_to_response(exc: HTTPException) -> ResponseBody:
-    return ResponseBody(type="HTTPException", code=exc.status_code, errors=[exc.detail])
+    return ResponseBody(
+        type="HTTPException",
+        code=HTTPStatus(exc.status_code),
+        errors=[{"detail": exc.detail}],
+    )

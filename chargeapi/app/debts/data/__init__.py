@@ -1,2 +1,2 @@
 from .entities import DebtIn, DebtOut
-from .repository import PersistDebtRepository, ListDebtsRepository
+from .repository import ListDebtsRepository, PersistDebtRepository

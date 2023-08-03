@@ -1,21 +1,21 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import settings
-from chargeapi.ext.bank_service import BankSlipService
-from chargeapi.ext.email_service import EmailApiClient
-from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from chargeapi.app.bank_slips.data import (
     BankSlip,
     BankSlipDebt,
     BankSlipPaymentIn,
     CreateBankSlipRepository,
-    RegisterBankSlipPaymentRepository,
     FlagNotifiedBankSlipRepository,
+    RegisterBankSlipPaymentRepository,
 )
+from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
+from chargeapi.ext.bank_service import BankSlipService
+from chargeapi.ext.email_service import EmailApiClient
 from infrastructure import logging
 
 CSV_CHARSET = "utf-8"
@@ -76,15 +76,13 @@ async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bo
     email_client.from_(settings.CONTACT_EMAIL)
     email_client.to(bank_slip.debt.email)
     email_client.subject("Boleto Bancário")
-    email_client.body(
-        f'''
+    email_client.body(f'''
         Olá, {bank_slip.debt.name}
 
         Boleto disponível em {bank_slip.payment_link}
 
         Código de barras: {bank_slip.barcode}
-        '''
-    )
+        ''')
 
     has_notified = await email_client.notify()
     if has_notified:
