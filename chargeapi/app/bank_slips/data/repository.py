@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Optional
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from chargeapi.db.base_repository import BaseRepository
 from chargeapi.db.models import DBBankSlip
-from .entities import BankSlipIn, BankSlipOut
+from .entities import BankSlipIn, BankSlipOut, BankSlipPaymentIn
 
 
 class PersistBankSlipsRepository(BaseRepository):
@@ -27,7 +27,24 @@ class PersistBankSlipsRepository(BaseRepository):
         await self.db_session.commit()
 
 
+class RegisterBankSlipPaymentRepository(BaseRepository):
+    async def execute(self, payment: BankSlipPaymentIn) -> int:  # type: ignore
+        query_update = (
+            update(DBBankSlip)
+            .where(DBBankSlip.debt_id == payment.debt_id)
+            .values(
+                paid_at=payment.paid_at,
+                paid_amount=payment.paid_amount,
+                paid_by=payment.paid_by,
+            )
+        )
+        result = await self.db_session.execute(query_update)
+        await self.db_session.commit()
+        return result.rowcount
+
+
 class ListBankSlipsRepository(BaseRepository):
+
     async def _adapt(self, db_bank_slips: List[DBBankSlip]) -> List[BankSlipOut]:
         return [
             BankSlipOut(
@@ -38,6 +55,9 @@ class ListBankSlipsRepository(BaseRepository):
                 debt_amount=db_obj.debt_amount,
                 debt_due_date=db_obj.debt_due_date,
                 debt_id=db_obj.debt_id,
+                paid_at=db_obj.paid_at,
+                paid_amount=db_obj.paid_amount,
+                paid_by=db_obj.paid_by,
             ) 
             for db_obj in db_bank_slips
         ]

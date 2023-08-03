@@ -1,2 +1,1 @@
-from .service import load_csv
-from .data import BankSlipIn
+from .service import load_csv, register_payment
