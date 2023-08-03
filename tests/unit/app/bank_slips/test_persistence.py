@@ -2,7 +2,8 @@ import io
 from datetime import date
 from unittest import mock
 
-from chargeapi.app.bank_slips import load_csv, BankSlipIn
+from chargeapi.app.bank_slips import load_csv
+from chargeapi.app.bank_slips.data import BankSlipIn
 
 
 async def test_session_persist(bytes_reader):

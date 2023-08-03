@@ -1,5 +1,6 @@
 import io
 
+from decimal import Decimal
 from datetime import date
 
 from chargeapi.app.bank_slips import load_csv
@@ -16,6 +17,6 @@ async def test_persist(session, bytes_reader):
     assert bank_slip.name == "John Doe"
     assert bank_slip.government_id == "11111111111"
     assert bank_slip.email == "johndoe@kanastra.com.br"
-    assert bank_slip.debt_amount == "1000000.00"
+    assert bank_slip.debt_amount == Decimal("1000000.00")
     assert bank_slip.debt_due_date == date(2022, 10, 12)
     assert bank_slip.debt_id == "8291"
