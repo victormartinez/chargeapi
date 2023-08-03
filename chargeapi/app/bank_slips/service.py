@@ -50,14 +50,16 @@ async def register_payment(
     paid_amount: Decimal, 
     paid_by: str
 ) -> None:
+    logger.info("started registering bank slip payment", debt_id=debt_id)
     payment_in = BankSlipPaymentIn(
         debt_id=debt_id, paid_at=paid_at, paid_amount=paid_amount, paid_by=paid_by
     )
     repository = RegisterBankSlipPaymentRepository(session)
     updated = await repository.execute(payment=payment_in)
     if not updated:
+        logger.error("bank slip not found", debt_id=debt_id)
         raise ChargeApiException(
             type=ChargeApiExceptionType.ENTITY_NOT_FOUND,
             message=f"Debt {debt_id} not found."
         )
-    
+    logger.info("finished registering bank slip payment", debt_id=debt_id)
