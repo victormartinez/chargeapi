@@ -18,12 +18,12 @@ async def create_bank_slips(session: AsyncSession, debts: List[DebtOut]):
     for item in debts:
         task = asyncio.create_task(
             create_bank_slip(
-                session, 
+                session,
                 item.id,
                 item.name,
                 item.email,
                 item.debt_amount,
-                item.debt_due_date
+                item.debt_due_date,
             )
         )
         background_tasks.add(task)

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure import logging
 from chargeapi.app.debts.data import (
-    DebtIn, 
+    DebtIn,
     PersistDebtRepository,
 )
 
@@ -29,7 +29,8 @@ async def load_csv(session: AsyncSession, file: BinaryIO) -> None:
             debt_due_date=row["debtDueDate"].strip(),
             debt_identifier=row["debtId"].strip(),
         )
-        for row in csv_reader if row
+        for row in csv_reader
+        if row
     ]
 
     logger.info("parsed csv", debts=len(bank_slips))

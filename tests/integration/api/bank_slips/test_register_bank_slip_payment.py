@@ -18,8 +18,8 @@ async def test_register_bank_slip_payment_success(session, async_client):
             "debtId": "12356",
             "paidAt": "2022-06-09 10:00:00",
             "paidAmount": 100000.00,
-            "paidBy": "John Doe"
-        }
+            "paidBy": "John Doe",
+        },
     )
     assert response.status_code == HTTPStatus.OK
 
@@ -31,7 +31,7 @@ async def test_register_bank_slip_payment_not_found(async_client):
             "debtId": "7648",
             "paidAt": "2022-06-09 10:00:00",
             "paidAmount": 100000.00,
-            "paidBy": "John Doe"
-        }
+            "paidBy": "John Doe",
+        },
     )
     assert response.status_code == HTTPStatus.NOT_FOUND

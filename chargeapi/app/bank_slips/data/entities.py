@@ -7,13 +7,13 @@ from pydantic import BaseModel
 
 
 class BankSlipPaymentIn(BaseModel):
-    debt_identifier: str 
-    paid_at: datetime 
-    paid_amount: Decimal 
+    debt_identifier: str
+    paid_at: datetime
+    paid_amount: Decimal
     paid_by: str
 
 
-class BankSlipOut(BaseModel):
+class BankSlip(BaseModel):
     id: UUID
     debt_id: UUID
     code: str

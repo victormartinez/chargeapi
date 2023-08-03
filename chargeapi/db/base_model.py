@@ -7,7 +7,6 @@ from chargeapi.db import Base
 from chargeapi.db.functions import utcnow
 
 
-
 class BaseModel(Base):
     # __abstract__ has to be True for Alembic doesn't create BaseModel as a Table in DB
     __abstract__ = True

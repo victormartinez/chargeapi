@@ -14,7 +14,7 @@ async def test_create_bank_slip(session):
         db_debt.name,
         db_debt.email,
         db_debt.debt_amount,
-        db_debt.debt_due_date
+        db_debt.debt_due_date,
     )
     assert result.id is not None
     assert str(result.debt_id) == str(db_debt.id)

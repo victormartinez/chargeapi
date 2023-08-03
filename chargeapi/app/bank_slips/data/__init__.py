@@ -1,2 +1,7 @@
-from .entities import BankSlipPaymentIn, BankSlipOut
-from .repository import RegisterBankSlipPaymentRepository, ListBankSlipsRepository, CreateBankSlipRepository
+from .entities import BankSlipPaymentIn, BankSlip
+from .repository import (
+    RegisterBankSlipPaymentRepository,
+    ListBankSlipsRepository,
+    CreateBankSlipRepository,
+    FlagNotifiedBankSlipRepository,
+)

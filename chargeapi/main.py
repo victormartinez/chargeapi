@@ -31,9 +31,7 @@ def configure_routes(application: FastAPI) -> None:
 def configure_exception_handlers(application: FastAPI) -> None:
     application.add_exception_handler(HTTPException, http_exception_handler)
     application.add_exception_handler(JSONDecodeError, bad_request_handler)
-    application.add_exception_handler(
-        ChargeApiException, validation_exception_handler
-    )
+    application.add_exception_handler(ChargeApiException, validation_exception_handler)
 
 
 def configure_healthcheck(app: FastAPI) -> None:

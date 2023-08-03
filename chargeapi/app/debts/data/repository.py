@@ -8,7 +8,6 @@ from .entities import DebtIn, DebtOut
 
 
 class PersistDebtRepository(BaseRepository):
-
     async def execute(self, bank_slips: List[DebtIn]) -> None:  # type: ignore
         objects = [
             DBDebt(
@@ -17,8 +16,8 @@ class PersistDebtRepository(BaseRepository):
                 email=bank_slip.email,
                 debt_amount=bank_slip.debt_amount,
                 debt_due_date=bank_slip.debt_due_date,
-                debt_identifier=bank_slip.debt_identifier
-            ) 
+                debt_identifier=bank_slip.debt_identifier,
+            )
             for bank_slip in bank_slips
         ]
         await self.db_session.run_sync(
@@ -28,7 +27,6 @@ class PersistDebtRepository(BaseRepository):
 
 
 class ListDebtsRepository(BaseRepository):
-
     async def _adapt(self, db_bank_slips: List[DBDebt]) -> List[DebtOut]:
         return [
             DebtOut(
@@ -39,7 +37,7 @@ class ListDebtsRepository(BaseRepository):
                 debt_amount=db_obj.debt_amount,
                 debt_due_date=db_obj.debt_due_date,
                 debt_identifier=db_obj.debt_identifier,
-            ) 
+            )
             for db_obj in db_bank_slips
         ]
 
@@ -51,7 +49,6 @@ class ListDebtsRepository(BaseRepository):
 
 
 class ListDebtsWithoutBankSlipsRepository(BaseRepository):
-
     async def _adapt(self, db_bank_slips: List[DBDebt]) -> List[DebtOut]:
         return [
             DebtOut(
@@ -62,16 +59,13 @@ class ListDebtsWithoutBankSlipsRepository(BaseRepository):
                 debt_amount=db_obj.debt_amount,
                 debt_due_date=db_obj.debt_due_date,
                 debt_identifier=db_obj.debt_identifier,
-            ) 
+            )
             for db_obj in db_bank_slips
         ]
 
     async def execute(self, offset: int, limit: int) -> Tuple[int, List[DebtOut]]:  # type: ignore
         query = (
-            select(
-                DBDebt,
-                func.count(DBDebt.id).over()
-            )
+            select(DBDebt, func.count(DBDebt.id).over())
             .join(DBBankSlip, isouter=True)
             .where(DBBankSlip.id.is_(None))
             .order_by(DBDebt.debt_due_date.asc())
@@ -82,7 +76,7 @@ class ListDebtsWithoutBankSlipsRepository(BaseRepository):
         rows = result.all()
         if not rows:
             return 0, []
-        
+
         total_items = rows[0][1]
         objects = [row[0] for row in rows]
         return total_items, await self._adapt(objects)

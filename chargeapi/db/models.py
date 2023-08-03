@@ -19,11 +19,12 @@ class DBDebt(BaseModel):
 
 class DBBankSlip(BaseModel):
     """
-    Note: 
+    Note:
         As the challenge allows abstracting details, this implementation takes some
         ideas from Pagbank API:
         https://dev.pagbank.uol.com.br/v1/reference/api-boleto-providers-gerar-boleto
     """
+
     __tablename__ = "bank_slips"
 
     debt_id = Column(
@@ -38,3 +39,4 @@ class DBBankSlip(BaseModel):
     paid_at = Column(DateTime, nullable=True)
     paid_amount = Column(DECIMAL, nullable=True)
     paid_by = Column(String, nullable=True)
+    notified_at = Column(DateTime, nullable=True)

@@ -28,7 +28,7 @@ async def test_register_payment(session):
             debt_identifier="8291",
             paid_at=PAID_AT,
             paid_amount=Decimal('1000.00'),
-            paid_by="John Doe"
+            paid_by="John Doe",
         )
     )
     assert result is True
@@ -56,7 +56,7 @@ async def test_register_payment_no_bank_slip(session):
                 debt_identifier="0987",
                 paid_at=datetime.utcnow(),
                 paid_amount=Decimal('1000.00'),
-                paid_by="John Doe"
+                paid_by="John Doe",
             )
         )
     assert exc_info.value.type == ChargeApiExceptionType.ENTITY_NOT_FOUND

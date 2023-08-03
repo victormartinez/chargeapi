@@ -9,13 +9,12 @@ from chargeapi.api.bank_slips.schema import BankSlipPaymentInput
 router = APIRouter(tags=["bank_slips"])
 
 
-@router.patch(
-    "/bankslips/pay",
-    status_code=HTTPStatus.OK
-)
-async def register_bank_slip_payment(payload: BankSlipPaymentInput, session: AsyncSession = Depends(get_session)) -> None:
+@router.patch("/bankslips/pay", status_code=HTTPStatus.OK)
+async def register_bank_slip_payment(
+    payload: BankSlipPaymentInput, session: AsyncSession = Depends(get_session)
+) -> None:
     await bank_slips.register_payment(
-        session, 
+        session,
         debt_identifier=payload.debt_identifier,
         paid_at=payload.paid_at,
         paid_amount=payload.paid_amount,
