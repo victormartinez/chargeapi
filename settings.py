@@ -2,6 +2,11 @@ from typing import Dict
 
 from decouple import config
 
+# BankSlip Service
+BANK_SLIP_HOST = config("BANK_SLIP_HOST", "https://pagseguro.uol.com.br")
+BANK_SLIP_API_KEY = config("BANK_SLIP_API_KEY", "")
+
+
 # Database specifications
 DB_USER = config("DB_USER", "")
 DB_PASS = config("DB_PASS", "")
