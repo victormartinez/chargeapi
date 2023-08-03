@@ -1,46 +1,47 @@
-from typing import List, Optional
+from typing import List
 
-from sqlalchemy import select, update
+from sqlalchemy import update, select
+from sqlalchemy.orm import joinedload
 
+from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
+from chargeapi.app.bank_slips.data.entities import BankSlipPaymentIn, BankSlipOut
 from chargeapi.db.base_repository import BaseRepository
-from chargeapi.db.models import DBBankSlip
-from .entities import BankSlipIn, BankSlipOut, BankSlipPaymentIn
+from chargeapi.db.models import DBDebt, DBBankSlip
 
-
-class PersistBankSlipsRepository(BaseRepository):
-
-    async def execute(self, bank_slips: List[BankSlipIn]) -> None:  # type: ignore
-        objects = [
-            DBBankSlip(
-                name=bank_slip.name,
-                government_id=bank_slip.government_id,
-                email=bank_slip.email,
-                debt_amount=bank_slip.debt_amount,
-                debt_due_date=bank_slip.debt_due_date,
-                debt_id=bank_slip.debt_id
-            ) 
-            for bank_slip in bank_slips
-        ]
-        await self.db_session.run_sync(
-            lambda session: session.bulk_save_objects(objects)
-        )
-        await self.db_session.commit()
 
 
 class RegisterBankSlipPaymentRepository(BaseRepository):
-    async def execute(self, payment: BankSlipPaymentIn) -> int:  # type: ignore
-        query_update = (
-            update(DBBankSlip)
-            .where(DBBankSlip.debt_id == payment.debt_id)
-            .values(
-                paid_at=payment.paid_at,
-                paid_amount=payment.paid_amount,
-                paid_by=payment.paid_by,
-            )
+    async def execute(self, payment: BankSlipPaymentIn) -> bool:  # type: ignore
+        query = (
+            select(DBDebt)
+            .join(DBBankSlip, isouter=True)
+            .where(DBDebt.debt_identifier == payment.debt_identifier)
+            .options(joinedload(DBDebt.bank_slip))
         )
-        result = await self.db_session.execute(query_update)
+        result = await self.db_session.execute(query)
+        db_debt = result.scalars().first()
+        if not db_debt:
+            raise ChargeApiException(
+                type=ChargeApiExceptionType.ENTITY_NOT_FOUND,
+                message=f"Debt identifier #{payment.debt_identifier} not found"
+            )
+        
+        db_bank_slip: DBBankSlip = db_debt.bank_slip
+        if not db_bank_slip:
+            raise ChargeApiException(
+                type=ChargeApiExceptionType.ENTITY_NOT_FOUND,
+                message=f"Debt identifier #{payment.debt_identifier} not found"
+            )
+
+        if db_bank_slip and db_bank_slip.paid_at:
+            # Idempotency
+            return True
+
+        db_bank_slip.paid_at = payment.paid_at
+        db_bank_slip.paid_amount = payment.paid_amount
+        db_bank_slip.paid_by = payment.paid_by
         await self.db_session.commit()
-        return result.rowcount
+        return True
 
 
 class ListBankSlipsRepository(BaseRepository):
@@ -49,12 +50,10 @@ class ListBankSlipsRepository(BaseRepository):
         return [
             BankSlipOut(
                 id=db_obj.id,
-                name=db_obj.name,
-                government_id=db_obj.government_id,
-                email=db_obj.email,
-                debt_amount=db_obj.debt_amount,
-                debt_due_date=db_obj.debt_due_date,
                 debt_id=db_obj.debt_id,
+                code=db_obj.code,
+                payment_link=db_obj.payment_link,
+                barcode=db_obj.barcode,
                 paid_at=db_obj.paid_at,
                 paid_amount=db_obj.paid_amount,
                 paid_by=db_obj.paid_by,

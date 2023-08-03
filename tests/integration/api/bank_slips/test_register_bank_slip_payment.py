@@ -1,12 +1,14 @@
 from http import HTTPStatus
 
 from tests.suite.database import DatabaseUtils
-from tests.suite.factory.bank_slip import DBBankSlipFactoryData
+from tests.suite.factory import DBDebtFactoryData, DBBankSlipFactoryData
 
 
 async def test_register_bank_slip_payment_success(session, async_client):
+    db_debt = DBDebtFactoryData.build(debt_identifier="12356")
+    await DatabaseUtils.create(session, db_debt)
     db_bank_slip = DBBankSlipFactoryData.build(
-        debt_id="12356", paid_at=None, paid_amount=None, paid_by=None,
+        debt_id=db_debt.id, paid_amount=None, paid_at=None, paid_by=None
     )
     await DatabaseUtils.create(session, db_bank_slip)
 

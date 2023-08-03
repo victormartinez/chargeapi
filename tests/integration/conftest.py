@@ -3,7 +3,7 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm.session import sessionmaker
 
-from chargeapi.db.models import DBBankSlip
+from chargeapi.db.models import DBDebt, DBBankSlip
 from chargeapi.db.session import SessionLocal
 from chargeapi.main import app
 from settings import build_database_uri, build_engine_config, build_session_config
@@ -24,6 +24,7 @@ async def session(override_async_session):
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def clean_db(session):
     await session.execute(delete(DBBankSlip))
+    await session.execute(delete(DBDebt))
     await session.commit()
 
 

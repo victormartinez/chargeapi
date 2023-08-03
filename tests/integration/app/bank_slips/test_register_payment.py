@@ -1,56 +1,62 @@
 from datetime import datetime
 from decimal import Decimal
 
-from chargeapi.app.bank_slips import load_csv
+import pytest
+
+from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from chargeapi.app.bank_slips.data import (
     BankSlipPaymentIn,
     ListBankSlipsRepository,
     RegisterBankSlipPaymentRepository,
 )
 from tests.suite.database import DatabaseUtils
-from tests.suite.factory.bank_slip import DBBankSlipFactoryData
+from tests.suite.factory import DBDebtFactoryData, DBBankSlipFactoryData
 
 
 async def test_register_payment(session):
+    db_debt = DBDebtFactoryData.build(debt_identifier="8291")
+    await DatabaseUtils.create(session, db_debt)
     db_bank_slip = DBBankSlipFactoryData.build(
-        debt_id="8291", paid_at=None, paid_amount=None, paid_by=None,
+        debt_id=db_debt.id, paid_amount=None, paid_at=None, paid_by=None
     )
     await DatabaseUtils.create(session, db_bank_slip)
 
-    result = await ListBankSlipsRepository(session).execute()
-    bank_slip = result[0]
-    assert bank_slip.debt_id == "8291"
-    assert bank_slip.paid_at is None
-    assert bank_slip.paid_amount is None
-    assert bank_slip.paid_by is None
-
+    PAID_AT = datetime.utcnow()
     repo = RegisterBankSlipPaymentRepository(session)
     result = await repo.execute(
         BankSlipPaymentIn(
-            debt_id="8291",
-            paid_at=datetime.utcnow(),
+            debt_identifier="8291",
+            paid_at=PAID_AT,
             paid_amount=Decimal('1000.00'),
             paid_by="John Doe"
         )
     )
-    assert result == 1
+    assert result is True
 
-    result = await ListBankSlipsRepository(session).execute()
-    bank_slip = result[0]
-    assert bank_slip.debt_id == "8291"
-    assert bank_slip.paid_at is not None
-    assert bank_slip.paid_amount == Decimal('1000.00')
-    assert bank_slip.paid_by == "John Doe"
+    bank_slips = await ListBankSlipsRepository(session).execute()
+    assert len(bank_slips) == 1
+
+    obj = bank_slips[0]
+    assert obj.id is not None
+    assert obj.debt_id is not None
+    assert obj.code is not None
+    assert obj.payment_link is not None
+    assert obj.barcode is not None
+    assert obj.paid_at == PAID_AT
+    assert obj.paid_amount == Decimal("1000.00")
+    assert obj.paid_by == "John Doe"
 
 
 async def test_register_payment_no_bank_slip(session):
     repo = RegisterBankSlipPaymentRepository(session)
-    result = await repo.execute(
-        BankSlipPaymentIn(
-            debt_id="0987",
-            paid_at=datetime.utcnow(),
-            paid_amount=Decimal('1000.00'),
-            paid_by="John Doe"
+
+    with pytest.raises(ChargeApiException) as exc_info:
+        await repo.execute(
+            BankSlipPaymentIn(
+                debt_identifier="0987",
+                paid_at=datetime.utcnow(),
+                paid_amount=Decimal('1000.00'),
+                paid_by="John Doe"
+            )
         )
-    )
-    assert result == 0
+    assert exc_info.value.type == ChargeApiExceptionType.ENTITY_NOT_FOUND

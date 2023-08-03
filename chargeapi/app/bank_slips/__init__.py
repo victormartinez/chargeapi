@@ -1,1 +1,1 @@
-from .service import load_csv, register_payment
+from .service import register_payment

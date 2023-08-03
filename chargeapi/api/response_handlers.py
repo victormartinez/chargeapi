@@ -30,7 +30,6 @@ def _get_error_code(err_type: Enum) -> HTTPStatus:
         ChargeApiExceptionType.DATABASE_ERROR: HTTPStatus.INTERNAL_SERVER_ERROR,
         ChargeApiExceptionType.DATABASE_INTEGRITY_ERROR: HTTPStatus.CONFLICT,
         ChargeApiExceptionType.ENTITY_NOT_FOUND: HTTPStatus.NOT_FOUND,
-        ChargeApiExceptionType.ENTITY_INACTIVE: HTTPStatus.FORBIDDEN,
     }.get(err_type, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 

@@ -9,7 +9,8 @@ from chargeapi.api.exception_handlers import (
     http_exception_handler,
     validation_exception_handler,
 )
-from chargeapi.api.bank_slips.resources import router as bank_slip_router
+from chargeapi.api.bank_slips.resources import router as bank_slips_router
+from chargeapi.api.debts.resources import router as debts_router
 from chargeapi.app.exceptions import ChargeApiException
 
 
@@ -23,7 +24,8 @@ def create_application() -> FastAPI:
 
 
 def configure_routes(application: FastAPI) -> None:
-    application.include_router(bank_slip_router)
+    application.include_router(bank_slips_router)
+    application.include_router(debts_router)
 
 
 def configure_exception_handlers(application: FastAPI) -> None:
