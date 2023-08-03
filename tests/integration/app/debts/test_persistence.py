@@ -10,7 +10,7 @@ from chargeapi.app.debts.data.repository import ListDebtsRepository
 async def test_persist(session, bytes_reader):
     await load_csv(session, io.BytesIO(bytes_reader('bank_slip.csv')))
 
-    result = await ListDebtsRepository(session).execute()
+    result = await ListDebtsRepository(session).execute(offset=0, limit=10)
     assert len(result) == 1
     bank_slip = result[0]
     assert bank_slip.id is not None

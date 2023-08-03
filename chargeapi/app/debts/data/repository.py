@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy import select
 
 from chargeapi.db.base_repository import BaseRepository
-from chargeapi.db.models import DBDebt
+from chargeapi.db.models import DBDebt, DBBankSlip
 from .entities import DebtIn, DebtOut
 
 
@@ -43,8 +43,12 @@ class ListDebtsRepository(BaseRepository):
             for db_obj in db_bank_slips
         ]
 
-    async def execute(self) -> List[DebtOut]:  # type: ignore
-        query = select(DBDebt)
+    async def execute(self, offset: int, limit: int) -> List[DebtOut]:  # type: ignore
+        query = (
+            select(DBDebt)
+            .offset(offset)
+            .limit(limit)
+        )
         query_result = await self.db_session.execute(query)
         db_rows = query_result.scalars().all()
         return await self._adapt(db_rows)
