@@ -5,6 +5,12 @@ class DatabaseUtils:
         await db_session.commit()
 
     @classmethod
+    async def create_many(cls, db_session, objects) -> None:
+        await db_session.run_sync(
+            lambda session: session.bulk_save_objects(objects)
+        )
+
+    @classmethod
     def expire_session_objects(cls, db_session) -> None:
         # expire all objects in the current session to fetch
         # Learn more:
