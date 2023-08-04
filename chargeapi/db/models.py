@@ -3,9 +3,8 @@ from sqlalchemy import DECIMAL, Column, Date, DateTime, ForeignKey, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
-from chargeapi.db.functions import utcnow
-
 from chargeapi.db.base_model import BaseModel
+from chargeapi.db.functions import utcnow
 
 
 class DBDebt(BaseModel):

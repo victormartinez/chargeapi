@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from typing import Any
 
-import asyncpg
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,7 +14,7 @@ class BaseRepository:
     async def run(self, *args: Any, **kwargs: Any):  # type: ignore
         try:
             return await self.execute(*args, **kwargs)
-        except IntegrityError as exc:
+        except IntegrityError:
             raise ChargeApiException(
                 type=ChargeApiExceptionType.DATABASE_INTEGRITY_ERROR,
                 message="Integrity error regarding data.",
