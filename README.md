@@ -10,20 +10,20 @@ This is a project that allows charging debts via bank slips.
 ## Getting Started
 
 1. Clone the repo
-```sh
-   git clone git@github.com:victormartinez/chargeapi.git
-```
+    ```
+    git clone git@github.com:victormartinez/chargeapi.git
+    ```
 
 2. Create a `.env` file from `env.sample`
 
 3. Install the dependencies
-    ```sh
+    ```
     cd chargeapi/
     poetry install
     ```
 
 4. Split the terminal and execute the commands below:
-    ```sh
+    ```
     make up
     make run
     ```
@@ -32,21 +32,23 @@ Application will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ### Main Commands
 
-    ```sh
-    make help
-    ```
+Makefile makes available most used commands.
 
-    ```sh
-    make format
-    ```
+```sh
+make help
+```
 
-    ```sh
-    make unit-test
-    ```
+```sh
+make format
+```
 
-    ```sh
-    make integration-test
-    ```
+```sh
+make unit-test
+```
+
+```sh
+make integration-test
+```
 
 ### Steps to manually testing
 
@@ -55,12 +57,12 @@ Application will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 2. Ingest a CSV file via `POST /debts/ingest`
 
 3. (Async) Generate Bank Slips via worker 
-    ```sh
+    ```
     python -m chargeapi.exec -script generate_bank_slips
     ```
 
 4. (Async) Send Bank Slips via worker
-    ```sh
+    ```
     python -m chargeapi.exec -script send_bank_slips
     ```
 
