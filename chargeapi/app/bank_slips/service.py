@@ -11,6 +11,7 @@ from chargeapi.app.bank_slips.data import (
     BankSlipPaymentIn,
     CreateBankSlipRepository,
     FlagNotifiedBankSlipRepository,
+    GetBankSlipRepository,
     RegisterBankSlipPaymentRepository,
 )
 from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
@@ -97,3 +98,14 @@ async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bo
 
     logger.warning("did not notify bank slip", debt_id=bank_slip.debt_id)
     return False
+
+
+async def retrieve_bank_slip(session: AsyncSession, idx: UUID) -> BankSlip:
+    repo = GetBankSlipRepository(session)
+    obj = await repo.execute(idx)
+    if not obj:
+        raise ChargeApiException(
+            type=ChargeApiExceptionType.ENTITY_NOT_FOUND,
+            message=f"Bank Slip ({idx}) not found",
+        )
+    return obj
