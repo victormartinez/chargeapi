@@ -1,15 +1,16 @@
 """empty message
 
-Revision ID: 4007ed05a184
+Revision ID: e3565f0489bc
 Revises: 
-Create Date: 2023-08-03 00:39:35.877725
+Create Date: 2023-08-03 23:24:27.882153
 
 """
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = '4007ed05a184'
+revision = 'e3565f0489bc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -39,6 +40,7 @@ def upgrade() -> None:
     sa.Column('paid_at', sa.DateTime(), nullable=True),
     sa.Column('paid_amount', sa.DECIMAL(), nullable=True),
     sa.Column('paid_by', sa.String(), nullable=True),
+    sa.Column('notified_at', sa.DateTime(timezone=True), server_default=sa.text("TIMEZONE('utc', CURRENT_TIMESTAMP)"), nullable=True),
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text("TIMEZONE('utc', CURRENT_TIMESTAMP)"), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text("TIMEZONE('utc', CURRENT_TIMESTAMP)"), nullable=True),

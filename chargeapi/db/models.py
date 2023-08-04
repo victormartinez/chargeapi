@@ -3,6 +3,8 @@ from sqlalchemy import DECIMAL, Column, Date, DateTime, ForeignKey, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
+from chargeapi.db.functions import utcnow
+
 from chargeapi.db.base_model import BaseModel
 
 
@@ -15,7 +17,7 @@ class DBDebt(BaseModel):
     debt_amount = Column(DECIMAL, nullable=False)
     debt_due_date = Column(Date)
     debt_identifier = Column(String, nullable=False, unique=True, index=True)
-    bank_slip = relationship("DBBankSlip", uselist=False)
+    bank_slip = relationship("DBBankSlip", uselist=False, back_populates="debt")
 
 
 class DBBankSlip(BaseModel):
@@ -40,5 +42,9 @@ class DBBankSlip(BaseModel):
     paid_at = Column(DateTime, nullable=True)
     paid_amount = Column(DECIMAL, nullable=True)
     paid_by = Column(String, nullable=True)
-    notified_at = Column(DateTime, nullable=True)
-    debt = relationship("DBDebt", uselist=False)
+    notified_at = Column(
+        DateTime(timezone=True),
+        server_default=utcnow(),
+        onupdate=utcnow(),
+    )
+    debt = relationship("DBDebt", uselist=False, back_populates="bank_slip")
