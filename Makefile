@@ -87,11 +87,15 @@ down:
 
 .PHONY: db_upgrade_test
 db_upgrade_test:
-	DB_PORT=5435 DB_USER=postgres DB_PASS=chargeapi_test DB_HOST=127.0.0.1 DB_PORT=5435 DB_NAME=chargeapi_test DB_POOL_SIZE=5 DB_MAX_OVERFLOW=0 alembic upgrade head
+	DB_PORT=5435 DB_USER=postgres DB_PASS=chargeapi_test DB_HOST=127.0.0.1 DB_PORT=5435 DB_NAME=chargeapi_test alembic upgrade head
 
 .PHONY: unit-test
 unit-test:
 	pytest tests/unit/ -vv
+
+.PHONY: db_upgrade
+db_upgrade:
+	alembic upgrade head
 
 .PHONY: db_generate_revision
 db_generate_revision:
@@ -102,7 +106,7 @@ integration-test:
 	- @make db_test_drop
 	docker run -d --name chargeapi_test_db -e "POSTGRES_DB=chargeapi_test" -e "POSTGRES_PASSWORD=chargeapi_test" -P -p 127.0.0.1:5435:5432 postgres:14-alpine
 	sleep 6
-	-  @make db_upgrade_test
+	@make db_upgrade_test
 	pytest tests/integration/ -vv
 	docker container stop chargeapi_test_db
 	docker container rm chargeapi_test_db
