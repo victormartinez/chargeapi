@@ -7,6 +7,9 @@ from urllib.parse import urljoin
 from pydantic import BaseModel
 
 import settings
+from infrastructure import logging
+
+logger = logging.get_logger(__name__)
 
 
 class BankSlipDocument(BaseModel):
@@ -23,6 +26,7 @@ class BankSlipService:
     async def generate_bank_slip(
         self, name: str, email: str, amount: Decimal, due_date: date
     ) -> BankSlipDocument:
+        logger.debug("generating bank slip via external service")
         CODE_LENGTH, BARCODE_LENGTH = 64, 80
         code = "".join(
             random.choice(  # nosec

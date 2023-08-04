@@ -1,5 +1,9 @@
 from pydantic import BaseModel
 
+from infrastructure import logging
+
+logger = logging.get_logger(__name__)
+
 
 class EmailApiResponse(BaseModel):
     to: str
@@ -29,6 +33,7 @@ class EmailApiClient:
         self._body = body
 
     async def notify(self) -> EmailApiResponse:
+        logger.debug("sending email")
         return EmailApiResponse(
             to=self._to,
             from_=self._from,
