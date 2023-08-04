@@ -1,14 +1,7 @@
-from datetime import datetime
-from decimal import Decimal
-
-import pytest
-
 from chargeapi.app.bank_slips import notify_bank_slip
 from chargeapi.app.bank_slips.data import (
-    BankSlipPaymentIn,
     GetBankSlipRepository,
     ListNotNotifiedBankSlipDebtsRepository,
-    RegisterBankSlipPaymentRepository,
 )
 from tests.suite.database import DatabaseUtils
 from tests.suite.factory import DBBankSlipFactoryData, DBDebtFactoryData

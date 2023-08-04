@@ -13,7 +13,7 @@ async def test_register_bank_slip_payment_success(session, async_client):
     await DatabaseUtils.create(session, db_bank_slip)
 
     response = await async_client.patch(
-        f"/bankslips/pay",
+        "/bankslips/pay",
         json={
             "debtId": "12356",
             "paidAt": "2022-06-09 10:00:00",
@@ -26,7 +26,7 @@ async def test_register_bank_slip_payment_success(session, async_client):
 
 async def test_register_bank_slip_payment_not_found(async_client):
     response = await async_client.patch(
-        f"/bankslips/pay",
+        "/bankslips/pay",
         json={
             "debtId": "7648",
             "paidAt": "2022-06-09 10:00:00",
