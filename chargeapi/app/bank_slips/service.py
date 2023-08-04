@@ -71,7 +71,7 @@ async def create_bank_slip(
     result = await repository.execute(
         debt_id, bank_slip.code, bank_slip.payment_link, bank_slip.barcode
     )
-    logger.info("finished creating bank slip", debt_id=debt_id)
+    logger.info("finished creating bank slip", id=result.id, debt_id=debt_id)
     return result
 
 
