@@ -20,7 +20,7 @@ help:
 	@echo "		integration-test - Run integration tests."
 	@echo "		coverage - Run tests and gather coverage data."
 	@echo "		up - Start containers."
-	@echo "		start_seed_db - Start seed database."
+	@echo "		run_local_container - Run project via docker."
 
 
 .PHONY: format
@@ -123,11 +123,3 @@ db_test_drop:
 .PHONY: db_drop
 db_drop:
 	docker container ls -a | grep chargeapi_db | awk '{print $$1}' | xargs docker container stop | xargs docker container rm
-
-.PHONY: start_seed_db
-start_seed_db:
-	docker-compose -f ../seed/docker-compose.yml up 
-
-.PHONY: run_local_container
-run_local_container:
-	docker-compose run --service-ports --rm chargeapi_app uvicorn chargeapi.main:app --host 0.0.0.0 --reload
