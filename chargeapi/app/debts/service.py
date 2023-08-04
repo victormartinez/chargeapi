@@ -35,5 +35,5 @@ async def load_csv(session: AsyncSession, file: BinaryIO) -> None:
 
     logger.info("parsed csv", debts=len(bank_slips))
     repository = PersistDebtRepository(session)
-    await repository.execute(bank_slips)
+    await repository.run(bank_slips)
     logger.info("persisted bank slips")

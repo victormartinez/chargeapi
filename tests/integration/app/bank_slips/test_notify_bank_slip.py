@@ -15,7 +15,7 @@ async def test_notify_bank_slip(session):
     await DatabaseUtils.create(session, db_bank_slip)
 
     repository = ListNotNotifiedBankSlipDebtsRepository(session)
-    total, bank_slips = await repository.execute(0, 10)
+    total, bank_slips = await repository.run(0, 10)
     assert total == 1
 
     has_notified = await notify_bank_slip(session, bank_slips[0])

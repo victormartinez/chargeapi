@@ -42,7 +42,7 @@ async def register_payment(
         paid_by=paid_by,
     )
     repository = RegisterBankSlipPaymentRepository(session)
-    updated = await repository.execute(payment=payment_in)
+    updated = await repository.run(payment=payment_in)
     if not updated:
         logger.error("debt not found", debt_identifier=debt_identifier)
         raise ChargeApiException(
@@ -68,7 +68,7 @@ async def create_bank_slip(
         name, email, debt_amount, debt_due_date
     )
     repository = CreateBankSlipRepository(session)
-    result = await repository.execute(
+    result = await repository.run(
         debt_id, bank_slip.code, bank_slip.payment_link, bank_slip.barcode
     )
     logger.info("finished creating bank slip", id=result.id, debt_id=debt_id)
@@ -92,7 +92,7 @@ async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bo
     has_notified = await email_client.notify()
     if has_notified:
         repository = FlagNotifiedBankSlipRepository(session)
-        updated_row = await repository.execute(bank_slip.id)
+        updated_row = await repository.run(bank_slip.id)
         logger.info("notified bank slip", debt_id=bank_slip.debt_id)
         return bool(updated_row)
 
@@ -102,7 +102,7 @@ async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bo
 
 async def retrieve_bank_slip(session: AsyncSession, idx: UUID) -> BankSlip:
     repo = GetBankSlipRepository(session)
-    obj = await repo.execute(idx)
+    obj = await repo.run(idx)
     if not obj:
         raise ChargeApiException(
             type=ChargeApiExceptionType.ENTITY_NOT_FOUND,

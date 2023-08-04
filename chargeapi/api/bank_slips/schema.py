@@ -2,14 +2,38 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, NaiveDatetime
 
 
 class BankSlipPaymentInput(BaseModel):
-    debt_identifier: str = Field(alias="debtId")
-    paid_at: datetime = Field(alias="paidAt")
-    paid_amount: Decimal = Field(alias="paidAmount")  # FIXME: should not be float
-    paid_by: str = Field(alias="paidBy")
+    debt_identifier: str = Field(
+        ...,
+        title="Debt identifier",
+        description="Specifies the internal identifier of a given debt",
+        example="8291",
+        alias="debtId"
+    )
+    paid_at: NaiveDatetime = Field(
+        ...,
+        title="Paid Date",
+        description="Specifies when the debt was paid.",
+        example="2023-08-04T02:28:35",
+        alias="paidAt",
+    )
+    paid_amount: Decimal = Field(
+        ...,
+        title="Paid Amount",
+        description="Specifies the amount paid.",
+        example=100.21,
+        alias="paidAmount"
+    )  # FIXME: should not be float
+    paid_by: str = Field(
+        ...,
+        title="Paid By",
+        description="Specifies who paid the debt.",
+        example="John Doe",
+        alias="paidBy",
+    )
 
 
 class BankSlipOut(BaseModel):

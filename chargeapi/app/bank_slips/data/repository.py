@@ -29,14 +29,14 @@ class RegisterBankSlipPaymentRepository(BaseRepository):
         if not db_debt:
             raise ChargeApiException(
                 type=ChargeApiExceptionType.ENTITY_NOT_FOUND,
-                message=f"Debt identifier #{payment.debt_identifier} not found",
+                message=f"Debt identifier {payment.debt_identifier} not found",
             )
 
         db_bank_slip: DBBankSlip = db_debt.bank_slip
         if not db_bank_slip:
             raise ChargeApiException(
                 type=ChargeApiExceptionType.ENTITY_NOT_FOUND,
-                message=f"Debt identifier #{payment.debt_identifier} not found",
+                message=f"Debt identifier {payment.debt_identifier} not found",
             )
 
         if db_bank_slip and db_bank_slip.paid_at:

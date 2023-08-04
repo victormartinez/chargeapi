@@ -8,14 +8,14 @@ async def test_list_debts_without_bank_slips_pagination(session):
     await DatabaseUtils.create_many(session, objects)
 
     repository = ListDebtsWithoutBankSlipsRepository(session)
-    total_items, result = await repository.execute(0, 4)
+    total_items, result = await repository.run(0, 4)
     assert total_items == 10
     assert len(result) == 4
 
-    total_items, result = await repository.execute(4, 4)
+    total_items, result = await repository.run(4, 4)
     assert total_items == 10
     assert len(result) == 4
 
-    total_items, result = await repository.execute(8, 4)
+    total_items, result = await repository.run(8, 4)
     assert total_items == 10
     assert len(result) == 2

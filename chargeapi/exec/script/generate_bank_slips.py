@@ -37,7 +37,7 @@ async def process() -> None:
     async for session in get_session():
         while has_next:
             repository = ListDebtsWithoutBankSlipsRepository(session)
-            total, debts = await repository.execute(OFFSET, LIMIT)
+            total, debts = await repository.run(OFFSET, LIMIT)
             if total == 0 or len(debts) == 0:
                 has_next = False
 
