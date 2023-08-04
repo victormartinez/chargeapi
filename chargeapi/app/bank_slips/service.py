@@ -61,17 +61,21 @@ async def create_bank_slip(
     debt_amount: Decimal,
     debt_due_date: date,
 ) -> BankSlip:
+    logger.info("started creating bank slip", debt_id=debt_id)
     bank_slip_service = BankSlipService(api_key=settings.BANK_SLIP_API_KEY)
     bank_slip = await bank_slip_service.generate_bank_slip(
         name, email, debt_amount, debt_due_date
     )
     repository = CreateBankSlipRepository(session)
-    return await repository.execute(
+    result = await repository.execute(
         debt_id, bank_slip.code, bank_slip.payment_link, bank_slip.barcode
     )
+    logger.info("finished creating bank slip", debt_id=debt_id)
+    return result
 
 
 async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bool:
+    logger.info("started notifying bank slip", debt_id=bank_slip.debt_id)
     email_client = EmailApiClient(api_key=settings.EMAIL_SERVICE_API_KEY)
     email_client.from_(settings.CONTACT_EMAIL)
     email_client.to(bank_slip.debt.email)
@@ -88,5 +92,8 @@ async def notify_bank_slip(session: AsyncSession, bank_slip: BankSlipDebt) -> bo
     if has_notified:
         repository = FlagNotifiedBankSlipRepository(session)
         updated_row = await repository.execute(bank_slip.id)
+        logger.info("notified bank slip", debt_id=bank_slip.debt_id)
         return bool(updated_row)
+
+    logger.warning("did not notify bank slip", debt_id=bank_slip.debt_id)
     return False
