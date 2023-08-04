@@ -1,6 +1,5 @@
 # type: ignore
 import uuid
-from datetime import datetime
 
 from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects import postgresql

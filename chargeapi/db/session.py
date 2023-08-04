@@ -7,7 +7,9 @@ from settings import build_database_uri, build_engine_config, build_session_conf
 
 engine = create_async_engine(build_database_uri(), **build_engine_config())
 
-SessionLocal = sessionmaker(engine, class_=AsyncSession, **build_session_config())  # type: ignore
+SessionLocal = sessionmaker(
+    engine, class_=AsyncSession, **build_session_config()
+)  # type: ignore
 
 
 async def get_session() -> AsyncGenerator:

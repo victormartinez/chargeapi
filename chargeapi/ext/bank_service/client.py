@@ -25,12 +25,14 @@ class BankSlipService:
     ) -> BankSlipDocument:
         CODE_LENGTH, BARCODE_LENGTH = 64, 80
         code = "".join(
-            random.choice(
+            random.choice(  # nosec
                 string.ascii_uppercase + string.ascii_lowercase + string.digits
             )
             for _ in range(CODE_LENGTH)
         )
-        barcode = "".join(random.choice(string.digits) for _ in range(BARCODE_LENGTH))
+        barcode = "".join(
+            random.choice(string.digits) for _ in range(BARCODE_LENGTH)  # nosec
+        )
 
         payment_link = urljoin(
             self.base_url, f"/checkout/payment/booklet/print.jhtml?c={code}"

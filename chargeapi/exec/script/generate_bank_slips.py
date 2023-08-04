@@ -5,7 +5,6 @@ import structlog
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from chargeapi.app.bank_slips import create_bank_slip
-from chargeapi.app.bank_slips.data import BankSlip
 from chargeapi.app.debts.data import DebtOut
 from chargeapi.app.debts.data.repository import ListDebtsWithoutBankSlipsRepository
 from chargeapi.db.session import get_session

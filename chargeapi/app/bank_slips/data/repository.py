@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Sequence, Tuple
 from uuid import UUID
 
-from sqlalchemy import ResultProxy, func, select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.orm import joinedload
 
 from chargeapi.app.bank_slips.data.entities import (
@@ -13,7 +13,7 @@ from chargeapi.app.bank_slips.data.entities import (
 )
 from chargeapi.app.exceptions import ChargeApiException, ChargeApiExceptionType
 from chargeapi.db.base_repository import BaseRepository
-from chargeapi.db.models import DBBankSlip, DBDebt
+from chargeapi.db.models import DBBankSlip, DBDebt  # type: ignore[attr-defined]
 
 
 class RegisterBankSlipPaymentRepository(BaseRepository):

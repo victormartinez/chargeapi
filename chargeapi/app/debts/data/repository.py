@@ -3,7 +3,7 @@ from typing import List, Sequence, Tuple
 from sqlalchemy import func, select
 
 from chargeapi.db.base_repository import BaseRepository
-from chargeapi.db.models import DBBankSlip, DBDebt
+from chargeapi.db.models import DBBankSlip, DBDebt  # type: ignore[attr-defined]
 
 from .entities import DebtIn, DebtOut
 
@@ -64,7 +64,9 @@ class ListDebtsWithoutBankSlipsRepository(BaseRepository):
             for db_obj in db_bank_slips
         ]
 
-    async def execute(self, offset: int, limit: int) -> Tuple[int, List[DebtOut]]:  # type: ignore
+    async def execute(
+        self, offset: int, limit: int
+    ) -> Tuple[int, List[DebtOut]]:  # type: ignore
         query = (
             select(DBDebt, func.count(DBDebt.id).over())  # type: ignore
             .join(DBBankSlip, isouter=True)
